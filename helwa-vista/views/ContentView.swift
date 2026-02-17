@@ -15,6 +15,16 @@ struct ContentView: View {
     var body: some View {
 
         ZStack(alignment: .bottom) {
+            VStack {
+                switch selection {
+                    case .map:
+                    MapView()
+                case .challenges:
+                    ChallengesView()
+                case .social:
+                    SocialView()
+                }
+            }
             CustomTabBar(selection: $selection)
         }
     }
