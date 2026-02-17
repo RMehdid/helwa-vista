@@ -20,23 +20,26 @@ struct MapView: View {
     )
     
     var body: some View {
-        Map(position: $cameraPosition) {
-            // Show user location on the map
-            if let userLocation = locationManager.userLocation {
-                Annotation("", coordinate: userLocation) {
-                    ZStack {
-                        Circle()
-                            .fill(.blue.opacity(0.3))
-                            .frame(width: 32, height: 32)
-                        Circle()
-                            .fill(.blue)
-                            .frame(width: 16, height: 16)
-                        Circle()
-                            .stroke(.white, lineWidth: 2)
-                            .frame(width: 16, height: 16)
+        ZStack(alignment: .top) {
+            Map(position: $cameraPosition) {
+                // Show user location on the map
+                if let userLocation = locationManager.userLocation {
+                    Annotation("", coordinate: userLocation) {
+                        ZStack {
+                            Circle()
+                                .fill(.blue.opacity(0.3))
+                                .frame(width: 32, height: 32)
+                            Circle()
+                                .fill(.blue)
+                                .frame(width: 16, height: 16)
+                            Circle()
+                                .stroke(.white, lineWidth: 2)
+                                .frame(width: 16, height: 16)
+                        }
                     }
                 }
             }
+            TopBarView()
         }
         .onChange(of: locationManager.userLocation) { oldValue, newValue in
             if let newLocation = newValue {
