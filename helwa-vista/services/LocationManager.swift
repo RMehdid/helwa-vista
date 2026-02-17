@@ -11,6 +11,9 @@ import Combine
 
 @MainActor
 class LocationManager: NSObject, ObservableObject {
+    
+    static let shared = LocationManager()
+    
     private let manager = CLLocationManager()
     
     @Published var userLocation: CLLocationCoordinate2D?
