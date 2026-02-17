@@ -7,12 +7,43 @@
 
 import SwiftUI
 
-struct TabView: View {
+struct CustomTabBar: View {
+    @Binding var selection: HVTabItem
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            ForEach(HVTabItem.allCases, id: \.self) { tab in
+                tabButton(tab)
+            }
+        }
+        .padding(.vertical, 12)
+        .padding(.horizontal)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(.ultraThinMaterial)
+        )
+        .padding()
+        .shadow(radius: 5)
+    }
+
+    private func tabButton(_ tab: HVTabItem) -> some View {
+        Button {
+            withAnimation(.spring()) {
+                selection = tab
+            }
+        } label: {
+            VStack(spacing: 4) {
+                Image(systemName: tab.icon)
+                    .font(.system(size: 20))
+                Text(tab.title)
+                    .font(.caption)
+            }
+            .foregroundStyle(selection == tab ? .blue : .gray)
+            .frame(maxWidth: .infinity)
+        }
     }
 }
 
 #Preview {
-    TabView()
+    CustomTabBar(selection: .constant(.map))
 }
