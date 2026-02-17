@@ -8,8 +8,41 @@
 import SwiftUI
 
 struct SocialView: View {
+    
+    @State private var selectedTab: Tab = .travellers
+    
+    private enum Tab: String, CaseIterable, Identifiable {
+        case friends = "Friends"
+        case travellers = "Travellers"
+        
+        var id: String { rawValue }
+    }
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            VStack {
+                Picker("", selection: $selectedTab) {
+                    ForEach(Tab.allCases) { tab in
+                        Text(tab.rawValue)
+                            .tag(tab)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(8)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                .frame(width: 300)
+                
+                Spacer()
+                
+                TravelExperienceView(user: HVUser.sampleUser)
+                    .padding(.horizontal, 24)
+            }
+        }
+        .background(Image("social-example")
+            .resizable()
+            .scaledToFill()
+            .ignoresSafeArea())
+        .animation(.spring(response: 0.4, dampingFraction: 0.85), value: selectedTab)
     }
 }
 
