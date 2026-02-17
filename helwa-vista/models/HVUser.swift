@@ -13,8 +13,9 @@ struct HVUser {
     let lastname: String
     let email: String?
     let pyro: String
+    let points: Int
     
-    static let sampleUser = HVUser(firstname: "Samy", lastname: "Mehdid", email: nil, pyro: pyros.randomElement()!)
+    static let sampleUser = HVUser(firstname: "Samy", lastname: "Mehdid", email: nil, pyro: pyros.randomElement()!, points: 1450)
     
     static let pyros = [
         "7309694",
