@@ -15,25 +15,7 @@ struct MyPyro: View {
             .resizable()
             .scaledToFit()
             .padding(1.5)
-            .overlay(
-                    Rectangle()                       // the stroke “canvas”
-                        .stroke(.white, lineWidth: 3)
-                        .mask(
-                            Image(pyro)
-                                .resizable()
-                                .scaledToFit()
-                        )
-                )
-            .overlay(
-                LinearGradient(colors: [.white.opacity(0.4), .clear],
-                               startPoint: .topLeading,
-                               endPoint: .bottomTrailing)
-                    .mask(
-                        Image(pyro)
-                            .resizable()
-                            .scaledToFit()
-                    )
-            )
+            
     }
 }
 
