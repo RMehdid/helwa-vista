@@ -10,22 +10,45 @@ import SwiftUI
 
 struct ContentView: View {
 
-    @State private var selection: HVTabItem = .map
-
     var body: some View {
-
-        ZStack(alignment: .bottom) {
-            VStack {
-                switch selection {
-                    case .map:
+        NavigationStack {
+            TabView {
+                Tab(HVTabItem.map.title, systemImage: HVTabItem.map.icon) {
                     MapView()
-                case .challenges:
+                 }
+                Tab(HVTabItem.challenges.title, systemImage: HVTabItem.challenges.icon) {
                     ChallengesView()
-                case .social:
+                 }
+                Tab(HVTabItem.social.title, systemImage: HVTabItem.social.icon) {
                     SocialView()
+                 }
+                
+                Tab(role: .search) {
+                    SearchView()
+                 }
+            }
+            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    MyPyro(pyro: HVUser.sampleUser.pyro)
+                        .frame(width: 34, height: 34)
+                }
+                
+                ToolbarItem(placement: .principal) {
+                    VStack(spacing: 4) {
+                        Text("Berlin")
+                            .font(.headline)
+                        
+                        HStack(spacing: 6) {
+                            Image(systemName: "cloud.sun.fill")
+                                .foregroundColor(.orange)
+                            Text("18°C")
+                                .font(.subheadline)
+                        }
+                    }
                 }
             }
-            CustomTabBar(selection: $selection)
         }
     }
 }
