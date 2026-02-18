@@ -12,6 +12,8 @@ struct SocialView: View {
     @State private var currentUser: HVUser = .sampleUser
     @State private var selectedTab: Tab = .travellers
     
+    @StateObject private var vm = ViewModel()
+    
     private enum Tab: String, CaseIterable, Identifiable {
         case friends = "Friends"
         case travellers = "Travellers"
@@ -19,13 +21,57 @@ struct SocialView: View {
         var id: String { rawValue }
     }
     
-    @State private var searchText: String = ""
-    
     var body: some View {
         NavigationStack {
             ZStack {
-                Spacer()
+                HStack {
+                    Spacer()
+                    
+                    VStack(alignment: .trailing, spacing: 24){
+                        Spacer()
+                        
+                        Button(action: vm.likeChallenge) {
+                            Image(systemName: "heart.fill")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundStyle(vm.isLiked ? .red : .white)
+                                .scaledToFit()
+                                .frame(width: 36)
+                        }
+                        
+                        Button(action: vm.openComments) {
+                            Image(systemName: "ellipsis.message.fill")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundStyle(.white)
+                                .scaledToFit()
+                                .frame(width: 36)
+                        }
+                        
+                        Button(action: vm.bookmarkChallenge) {
+                            Image(systemName: "bookmark.fill")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundStyle(vm.isBookMarked ? .yellow : .white)
+                                .scaledToFit()
+                                .frame(width: 36, height: 36)
+                        }
+                        
+                        Button(action: vm.shareChallenge) {
+                            Image("send")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundStyle(.white)
+                                .scaledToFit()
+                                .frame(width: 36, height: 36)
+                        }
+                        
+                        Spacer()
+                    }
+                    
+                }
             }
+            .padding(.trailing, 24)
             .safeAreaInset(edge: .top) {
                 Picker("", selection: $selectedTab) {
                     ForEach(Tab.allCases) { tab in
@@ -43,6 +89,7 @@ struct SocialView: View {
                     .glassEffect(.regular.interactive())
                     .padding(.horizontal)
                     .padding(.bottom, 8)
+                    .onTapGesture(perform: vm.openUserProfile)
             }
             .background(Image("social-example")
                 .resizable()
@@ -50,12 +97,9 @@ struct SocialView: View {
                 .ignoresSafeArea())
             .animation(.spring(response: 0.4, dampingFraction: 0.85), value: selectedTab)
         }
-        .searchable(text: $searchText,
-                    placement: .automatic,
-                    prompt: "Search users or posts")
     }
 }
 
 #Preview {
-    ContentView()
+    SocialView()
 }
