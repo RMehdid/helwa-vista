@@ -11,7 +11,7 @@ import SwiftUI
 struct helwa_vistaApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView()
         }
     }
 }
