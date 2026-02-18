@@ -8,7 +8,9 @@
 import MapKit
 import SwiftUI
 
-struct ContentView: View {
+struct HomeView: View {
+    
+    @StateObject private var vm = ViewModel()
 
     var body: some View {
         NavigationStack {
@@ -31,9 +33,10 @@ struct ContentView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    MyPyro(pyro: HVUser.sampleUser.pyro)
-                        .frame(width: 34, height: 34)
-                        .onTapGesture(perform: <#T##() -> Void#>)
+                    NavigationLink(destination: ProfileView(user: HVUser.sampleUser)) {
+                            MyPyro(pyro: HVUser.sampleUser.pyro)
+                                .frame(width: 28, height: 38)
+                        }
                 }
                 
                 ToolbarItem(placement: .principal) {
@@ -51,10 +54,13 @@ struct ContentView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Image("send")
-                        .renderingMode(.template)
-                        .resizable()
-                        .frame(width: 24, height: 24)
+                    NavigationLink(destination: MessagesView()) {
+                        Image("send")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                        }
+                    
                 }
             }
             .tint(Color(.label))
@@ -63,5 +69,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    HomeView()
 }
