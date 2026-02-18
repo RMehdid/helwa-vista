@@ -12,32 +12,41 @@ extension SocialView {
     @MainActor
     class ViewModel: ObservableObject {
         
-        @Published private(set) var isLiked: Bool = false
-        @Published private(set) var isBookMarked: Bool = false
-        @Published private(set) var isReposted: Bool = false
+        @Published var posts: [HVPost] = HVPost.samplePosts
+        @Published var selectedPostId: UUID?
         
-        func likeChallenge() -> Void {
-            isLiked.toggle()
+        init() {
+            selectedPostId = posts.first?.id
         }
         
-        func openComments() -> Void {
-            
+        func likePost(_ post: HVPost) {
+            if let index = posts.firstIndex(where: { $0.id == post.id }) {
+                posts[index].isLiked.toggle()
+            }
         }
         
-        func bookmarkChallenge() -> Void {
-            isBookMarked.toggle()
+        func bookmarkPost(_ post: HVPost) {
+            if let index = posts.firstIndex(where: { $0.id == post.id }) {
+                posts[index].isBookmarked.toggle()
+            }
         }
         
-        func shareChallenge() -> Void {
-            
+        func repostPost(_ post: HVPost) {
+            if let index = posts.firstIndex(where: { $0.id == post.id }) {
+                posts[index].isReposted.toggle()
+            }
         }
         
-        func repostChallenge() -> Void {
-            isReposted.toggle()
+        func openComments() {
+            // Implementation for opening comments
         }
         
-        func openUserProfile() -> Void {
-            
+        func sharePost() {
+            // Implementation for sharing
+        }
+        
+        func openUserProfile() {
+            // Implementation for opening user profile
         }
     }
 }
