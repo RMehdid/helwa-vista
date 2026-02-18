@@ -48,7 +48,15 @@ struct ContentView: View {
                         }
                     }
                 }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Image("send")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                }
             }
+            .tint(Color(.label))
         }
     }
 }
