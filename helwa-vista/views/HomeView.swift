@@ -33,6 +33,7 @@ struct ContentView: View {
                 ToolbarItem(placement: .topBarLeading) {
                     MyPyro(pyro: HVUser.sampleUser.pyro)
                         .frame(width: 34, height: 34)
+                        .onTapGesture(perform: <#T##() -> Void#>)
                 }
                 
                 ToolbarItem(placement: .principal) {
