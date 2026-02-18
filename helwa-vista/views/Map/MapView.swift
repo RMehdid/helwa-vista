@@ -39,7 +39,6 @@ struct MapView: View {
                     }
                 }
             }
-            TopBarView()
         }
         .onChange(of: locationManager.userLocation) { oldValue, newValue in
             if let newLocation = newValue {
