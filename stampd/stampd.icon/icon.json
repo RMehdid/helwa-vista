@@ -1,0 +1,52 @@
+{
+  "fill" : {
+    "automatic-gradient" : "srgb:0.57255,0.29804,0.80784,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "image-name" : "S.svg",
+          "name" : "S",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0.13506493506486095,
+              0.30914814156915327
+            ]
+          }
+        },
+        {
+          "fill" : {
+            "solid" : "extended-gray:1.00000,1.00000"
+          },
+          "glass" : false,
+          "image-name" : "postage-stamp.png",
+          "name" : "postage-stamp",
+          "opacity" : 0.1,
+          "position" : {
+            "scale" : 1.64,
+            "translation-in-points" : [
+              -0.006753246753305575,
+              0
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

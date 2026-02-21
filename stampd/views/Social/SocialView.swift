@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct SocialView: View {
-    
-    @State private var currentUser: HVUser = .sampleUser
+
     @State private var selectedTab: Tab = .travellers
     
     @StateObject private var vm = ViewModel()
