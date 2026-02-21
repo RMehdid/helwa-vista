@@ -10,6 +10,9 @@ import SwiftUI
 struct SignInView: View {
     
     @State private var selectedDetent: PresentationDetent = .fraction(0.4)
+    
+    @StateObject private var vm = ViewModel()
+    
     var body: some View {
         ZStack(alignment: .top) {
             Image("signin")
@@ -49,7 +52,11 @@ struct SignInView: View {
                 Button("Continue with Apple") {}
                     .buttonStyle(.borderedProminent)
                 
-                Button("Continue with Google") {}
+                Button("Continue with Google") {
+                    Task {
+                        await vm.signInWithGoogle()
+                    }
+                }
                     .buttonStyle(.bordered)
                 
                 Button("Continue with Email") {}

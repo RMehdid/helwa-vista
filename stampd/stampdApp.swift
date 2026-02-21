@@ -7,15 +7,24 @@
 
 import SwiftUI
 import GoogleSignIn
+import Supabase
 
 @main
 struct StampdApp: App {
+    let client = AuthManager.shared.client
+    
     var body: some Scene {
         WindowGroup {
-            HomeView()
-                .onOpenURL { url in
-                    GIDSignIn.sharedInstance.handle(url)
+            ZStack {
+                if let user = client.auth.currentUser {
+                    HomeView()
+                } else {
+                    SignInView()
                 }
+            }
+            .onOpenURL { url in
+                GIDSignIn.sharedInstance.handle(url)
+            }
         }
     }
 }

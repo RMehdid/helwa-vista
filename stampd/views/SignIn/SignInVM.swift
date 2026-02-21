@@ -6,10 +6,18 @@
 //
 
 import Combine
+import Foundation
 
 extension SignInView {
     @MainActor
     class ViewModel: ObservableObject {
         
+        func signInWithGoogle() async {
+            do {
+                try await AuthManager.shared.googleSignIn()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }

@@ -63,7 +63,6 @@ struct HomeView: View {
                     
                 }
             }
-            .tint(Color(.label))
         }
     }
 }
