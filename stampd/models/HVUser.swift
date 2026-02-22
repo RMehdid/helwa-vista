@@ -7,15 +7,25 @@
 
 import Foundation
 
-struct HVUser {
-    let id: UUID = UUID()
+struct HVUser: Codable, Identifiable {
+    
+    let id: UUID
+    let user_id: UUID
     let firstname: String
     let lastname: String
-    let email: String?
     let pyro: String
     let points: Int
     
-    static let sampleUser = HVUser(firstname: "Samy", lastname: "Mehdid", email: nil, pyro: pyros.randomElement()!, points: 1450)
+    enum CodingKeys: String, CodingKey {
+        case id
+        case user_id
+        case firstname
+        case lastname
+        case pyro
+        case points
+    }
+    
+    static let sampleUser = HVUser(id: UUID(), user_id: UUID(), firstname: "Samy", lastname: "Mehdid", pyro: pyros.randomElement()!, points: 1450)
     
     static let pyros = [
         "7309694",

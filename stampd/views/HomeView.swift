@@ -33,10 +33,18 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink(destination: ProfileView(user: HVUser.sampleUser)) {
-                            MyPyro(pyro: HVUser.sampleUser.pyro)
-                                .frame(width: 28, height: 38)
-                        }
+                    switch vm.state {
+                    case .loading:
+                        ProgressView()
+                    case .success(let user):
+                        NavigationLink(destination: ProfileView(user: user)) {
+                                MyPyro(pyro: HVUser.sampleUser.pyro)
+                                    .frame(width: 28, height: 38)
+                            }
+                    case .failure(_):
+                        Image(systemName: "person.crop.circle.badge.exclamationmark.fill")
+                            .frame(width: 28, height: 38)
+                    }
                 }
                 
                 ToolbarItem(placement: .principal) {
@@ -60,8 +68,10 @@ struct HomeView: View {
                             .resizable()
                             .frame(width: 24, height: 24)
                         }
-                    
                 }
+            }
+            .task {
+                await vm.loadProfile()
             }
         }
     }

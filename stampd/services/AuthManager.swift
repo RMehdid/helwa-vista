@@ -63,10 +63,12 @@ extension AuthManager {
     }
     
     func signUp(email: String, password: String) async throws {
-        try await client.auth.signUp(
+        let response = try await client.auth.signUp(
             email: email,
             password: password
         )
+        
+        try await ProfileManager.shared.createProfile(userId: response.user.id, firstname: "User", lastname: "Default")
     }
     
     func signOut() async throws {
@@ -78,27 +80,46 @@ extension AuthManager {
 extension AuthManager {
     
     func signInWithGoogle(idToken: String) async throws {
-        try await client.auth.signInWithIdToken(
+        let response = try await client.auth.signInWithIdToken(
             credentials: .init(provider: .google, idToken: idToken)
         )
+        
+        try await self.handleSocialLogin(user: response.user)
     }
     
     func signInWithApple(idToken: String, nonce: String) async throws {
-        try await client.auth.signInWithIdToken(
+        let response = try await client.auth.signInWithIdToken(
             credentials: .init(
                 provider: .apple,
                 idToken: idToken,
                 nonce: nonce
             )
         )
+        
+        try await self.handleSocialLogin(user: response.user)
     }
     
     func signInWithFacebook(accessToken: String) async throws {
-        try await client.auth.signInWithIdToken(
+        let response = try await client.auth.signInWithIdToken(
             credentials: .init(
                 provider: .facebook,
                 idToken: accessToken
             )
+        )
+        
+        try await self.handleSocialLogin(user: response.user)
+    }
+}
+
+extension AuthManager {
+    func handleSocialLogin(user: User) async throws {
+        
+        let firstname = user.userMetadata["full_name"]?.stringValue ?? ""
+        
+        try await ProfileManager.shared.createProfile(
+            userId: user.id,
+            firstname: firstname,
+            lastname: ""
         )
     }
 }

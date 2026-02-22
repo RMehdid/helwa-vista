@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     
-    let user: HVUser
+    @State var user: HVUser
     
     var body: some View {
         VStack(spacing: 24){
@@ -25,11 +25,6 @@ struct ProfileView: View {
                         .bold()
                 }
                 Spacer()
-            }
-            
-            HStack {
-                labelBuilder(label: "Spots", value: "15")
-                labelBuilder(label: "Trips", value: "3")
             }
             
             VStack {
@@ -82,22 +77,6 @@ struct ProfileView: View {
                 }
             }
         }
-    }
-    
-    @ViewBuilder
-    func labelBuilder(label: String, value: String) -> some View {
-        VStack {
-            Text(value)
-                .font(.system(size: 24))
-            Text(label)
-                .font(.system(size: 16))
-                .opacity(0.6)
-        }
-        .frame(width: 72, height: 72)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.primary.opacity(0.6), lineWidth: 2)
-        )
     }
 }
 
