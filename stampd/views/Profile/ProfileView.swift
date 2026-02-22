@@ -70,6 +70,18 @@ struct ProfileView: View {
             Spacer()
         }
         .padding(24)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    Task {
+                        try? await AuthManager.shared.signOut()
+                    }
+                } label: {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                        .foregroundColor(.red)
+                }
+            }
+        }
     }
     
     @ViewBuilder

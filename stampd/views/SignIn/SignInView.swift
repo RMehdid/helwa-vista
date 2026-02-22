@@ -95,6 +95,13 @@ struct SignInView: View {
             VStack(spacing: 12) {
                 
                 SocialLoginButton(
+                    title: "Continue with Apple",
+                    systemImage: "apple"
+                ) {
+                    //
+                }
+                
+                SocialLoginButton(
                     title: "Continue with Google",
                     systemImage: "globe"
                 ) {
@@ -102,17 +109,10 @@ struct SignInView: View {
                 }
                 
                 SocialLoginButton(
-                    title: "Continue with Google",
-                    systemImage: "globe"
-                ) {
-                    // integrate Google SDK
-                }
-                
-                SocialLoginButton(
                     title: "Continue with Facebook",
                     systemImage: "f.circle"
                 ) {
-                    // integrate Facebook SDK
+                    Task { await vm.signInWithFacebook() }
                 }
             }
             
