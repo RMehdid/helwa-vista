@@ -9,9 +9,10 @@ import SwiftUI
 
 struct SignInView: View {
     
-    @State private var selectedDetent: PresentationDetent = .fraction(0.4)
-    
     @StateObject private var vm = ViewModel()
+    
+    @State private var email: String = ""
+    @State private var password: String = ""
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -34,38 +35,90 @@ struct SignInView: View {
         .sheet(isPresented: .constant(true)) {
             SignInSheet()
                 .presentationDragIndicator(.visible)
-                .presentationDetents([.fraction(0.4), .large], selection: $selectedDetent)
+                .presentationDetents([.fraction(0.7)])
                 .presentationCornerRadius(30)
         }
     }
     
     @ViewBuilder
     private func SignInSheet() -> some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 28) {
             
-            Text("Welcome")
-                .font(.title2)
-                .bold()
-                .padding(.top)
+            VStack(spacing: 16) {
+                
+                TextField("Email", text: $email)
+                    .keyboardType(.emailAddress)
+                    .autocapitalization(.none)
+                    .authFieldStyle()
+                
+                SecureField("Password", text: $password)
+                    .authFieldStyle()
+            }
+            
+            Button {
+                Task {
+                    await vm.signInWithEmail(email: email, password: password)
+                }
+            } label: {
+                Text("Sign In")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.black)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
+            }
+            
+            HStack {
+                Rectangle().frame(height: 1).foregroundColor(.gray.opacity(0.3))
+                Text("OR")
+                    .foregroundColor(.gray)
+                    .font(.footnote)
+                Rectangle().frame(height: 1).foregroundColor(.gray.opacity(0.3))
+            }
             
             VStack(spacing: 12) {
-                Button("Continue with Apple") {}
-                    .buttonStyle(.borderedProminent)
                 
-                Button("Continue with Google") {
+                SocialLoginButton(
+                    title: "Continue with Apple",
+                    systemImage: "applelogo"
+                ) {
+                    Task {
+                        await vm.signInWithApple(idToken: "hhhh")
+                    }
+                }
+                
+                SocialLoginButton(
+                    title: "Continue with Google",
+                    systemImage: "globe"
+                ) {
                     Task {
                         await vm.signInWithGoogle()
                     }
                 }
-                    .buttonStyle(.bordered)
                 
-                Button("Continue with Email") {}
-                    .buttonStyle(.bordered)
+                SocialLoginButton(
+                    title: "Continue with Facebook",
+                    systemImage: "f.circle"
+                ) {
+                    Task {
+                        await vm.signInWithMeta(idToken: "hhhh")
+                    }
+                }
             }
             
-            Spacer()
+            HStack {
+                Text("Don’t have an account?")
+                
+                Button("Sign Up") {
+                    Task {
+                        await vm.signUp(email: email, password: password)
+                    }
+                }
+                .fontWeight(.semibold)
+            }
+            .font(.footnote)
         }
-        .padding()
+        .padding(24)
     }
 }
 
