@@ -10,6 +10,7 @@
 		037CA1232F45F13F009CCD02 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 037CA1222F45F13F009CCD02 /* Supabase */; };
 		03F892122F47C47400DFECCA /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 03F892112F47C47400DFECCA /* GoogleSignIn */; };
 		03F892142F47C47400DFECCA /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03F892132F47C47400DFECCA /* GoogleSignInSwift */; };
+		99602EF82F4B98A200D02A42 /* FacebookLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 99602EF72F4B98A200D02A42 /* FacebookLogin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99602EF82F4B98A200D02A42 /* FacebookLogin in Frameworks */,
 				03F892142F47C47400DFECCA /* GoogleSignInSwift in Frameworks */,
 				037CA1232F45F13F009CCD02 /* Supabase in Frameworks */,
 				03F892122F47C47400DFECCA /* GoogleSignIn in Frameworks */,
@@ -90,6 +92,7 @@
 				037CA1222F45F13F009CCD02 /* Supabase */,
 				03F892112F47C47400DFECCA /* GoogleSignIn */,
 				03F892132F47C47400DFECCA /* GoogleSignInSwift */,
+				99602EF72F4B98A200D02A42 /* FacebookLogin */,
 			);
 			productName = "helwa-vista";
 			productReference = 03FEF9002EE7632B0047B830 /* stampd.app */;
@@ -126,6 +129,7 @@
 			packageReferences = (
 				037CA1212F45F13F009CCD02 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				03F892102F47C47400DFECCA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				99602EF62F4B98A200D02A42 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 03FEF9012EE7632B0047B830 /* Products */;
@@ -160,6 +164,8 @@
 /* Begin XCBuildConfiguration section */
 		03FEF9092EE7632E0047B830 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 03FEF9022EE7632B0047B830 /* stampd */;
+			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -225,6 +231,8 @@
 		};
 		03FEF90A2EE7632E0047B830 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 03FEF9022EE7632B0047B830 /* stampd */;
+			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -282,8 +290,6 @@
 		};
 		03FEF90C2EE7632E0047B830 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 03FEF9022EE7632B0047B830 /* stampd */;
-			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = stampd;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -347,8 +353,6 @@
 		};
 		03FEF90D2EE7632E0047B830 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 03FEF9022EE7632B0047B830 /* stampd */;
-			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = stampd;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -450,6 +454,14 @@
 				minimumVersion = 9.1.0;
 			};
 		};
+		99602EF62F4B98A200D02A42 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/facebook/facebook-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 14.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -467,6 +479,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03F892102F47C47400DFECCA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
+		};
+		99602EF72F4B98A200D02A42 /* FacebookLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 99602EF62F4B98A200D02A42 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookLogin;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -5,60 +5,100 @@
 //  Created by Mehdid, Samy Abderraouf on 19.02.26.
 //
 
+import SwiftUI
 import Supabase
-import Foundation
-import GoogleSignIn
+import Combine
 
-class AuthManager {
+@MainActor
+final class AuthManager: SupabaseManager, ObservableObject {
     
     static let shared = AuthManager()
+    
+    @Published private(set) var session: Session?
+    
+    @Published private(set) var authState: AuthState = .loading
+    
+    var isAuthenticated: Bool {
+        session != nil && !(session?.isExpired ?? true)
+    }
+    
+    private override init() {
+        super.init()
         
-    var client: SupabaseClient {
-        guard
-            let host = Bundle.main.object(forInfoDictionaryKey: "supabaseURL") as? String,
-            let url = URL(string: "https://\(host)"),
-            let key = Bundle.main.object(forInfoDictionaryKey: "supabaseKey") as? String
-        else {
-            fatalError("Missing or invalid Supabase config in Info.plist")
+        Task {
+            await loadSession()
+            listenToAuthChanges()
         }
-        
-        return SupabaseClient(supabaseURL: url, supabaseKey: key)
+    }
+}
+
+extension AuthManager {
+    
+    private func loadSession() async {
+        session = client.auth.currentSession
     }
     
-    func signInWithMeta(idToken: String) async throws {
-        try await client.auth.signInWithIdToken(credentials: .init(provider: .facebook, idToken: idToken))
-    }
-    
-    func signInWithGoogle() async throws {
-        // Find the current window scene.
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            throw HVError.custom(message: "There is no window scene")
+    private func listenToAuthChanges() {
+        Task {
+            for await state in client.auth.authStateChanges {
+                session = state.session
+                
+                if let session = state.session, !session.isExpired {
+                    authState = .authenticated
+                } else {
+                    authState = .unauthenticated
+                }
+            }
         }
-        
-        // Get the root view controller from the window scene.
-        guard let rootViewController = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController else {
-            throw HVError.custom(message: "There is no key window or root view controller")
-        }
-        
-        try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
     }
+}
+
+extension AuthManager {
     
-    func signInWithApple(idToken: String) async throws {
-        try await client.auth.signInWithIdToken(credentials: .init(provider: .apple, idToken: idToken))
-    }
-    
-    func signInWithEmail(email: String, password: String) async throws {
+    func signIn(email: String, password: String) async throws {
         try await client.auth.signIn(
-          email: email,
-          password: password
+            email: email,
+            password: password
         )
     }
     
     func signUp(email: String, password: String) async throws {
         try await client.auth.signUp(
-          email: email,
-          password: password
+            email: email,
+            password: password
         )
+    }
+    
+    func signOut() async throws {
+        try await client.auth.signOut()
+        session = nil
     }
 }
 
+extension AuthManager {
+    
+    func signInWithGoogle(idToken: String) async throws {
+        try await client.auth.signInWithIdToken(
+            credentials: .init(provider: .google, idToken: idToken)
+        )
+    }
+    
+    func signInWithApple(idToken: String, nonce: String) async throws {
+        try await client.auth.signInWithIdToken(
+            credentials: .init(
+                provider: .apple,
+                idToken: idToken,
+                nonce: nonce
+            )
+        )
+    }
+    
+    func signInWithFacebook(accessToken: String) async throws {
+        try await client.auth.signInWithIdToken(
+            credentials: .init(
+                provider: .facebook,
+                idToken: accessToken
+            )
+        )
+    }
+}

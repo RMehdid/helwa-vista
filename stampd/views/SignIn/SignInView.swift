@@ -10,12 +10,11 @@ import SwiftUI
 struct SignInView: View {
     
     @StateObject private var vm = ViewModel()
-    
-    @State private var email: String = ""
-    @State private var password: String = ""
+    @State private var showSheet = true
     
     var body: some View {
         ZStack(alignment: .top) {
+            
             Image("signin")
                 .resizable()
                 .scaledToFill()
@@ -27,96 +26,116 @@ struct SignInView: View {
                     .scaledToFit()
                     .frame(width: 80)
                     .padding(.vertical)
-                    
+                
                 Spacer()
             }
-            
         }
-        .sheet(isPresented: .constant(true)) {
-            SignInSheet()
+        .sheet(isPresented: $showSheet) {
+            SignInSheet
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.fraction(0.7)])
                 .presentationCornerRadius(30)
         }
     }
     
-    @ViewBuilder
-    private func SignInSheet() -> some View {
+    private var SignInSheet: some View {
         VStack(spacing: 28) {
+            
+            // MARK: Fields
             
             VStack(spacing: 16) {
                 
-                TextField("Email", text: $email)
+                TextField("Email", text: $vm.email)
                     .keyboardType(.emailAddress)
-                    .autocapitalization(.none)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
                     .authFieldStyle()
                 
-                SecureField("Password", text: $password)
+                SecureField("Password", text: $vm.password)
                     .authFieldStyle()
             }
             
+            // MARK: Sign In
+            
             Button {
-                Task {
-                    await vm.signInWithEmail(email: email, password: password)
-                }
+                Task { await vm.signIn() }
             } label: {
-                Text("Sign In")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.black)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
+                if vm.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                } else {
+                    Text("Sign In")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                }
             }
+            .background(Color.black)
+            .foregroundColor(.white)
+            .cornerRadius(12)
+            
+            // MARK: Divider
             
             HStack {
-                Rectangle().frame(height: 1).foregroundColor(.gray.opacity(0.3))
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(.gray.opacity(0.3))
+                
                 Text("OR")
                     .foregroundColor(.gray)
                     .font(.footnote)
-                Rectangle().frame(height: 1).foregroundColor(.gray.opacity(0.3))
+                
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(.gray.opacity(0.3))
             }
+            
+            // MARK: Social
             
             VStack(spacing: 12) {
                 
                 SocialLoginButton(
-                    title: "Continue with Apple",
-                    systemImage: "applelogo"
+                    title: "Continue with Google",
+                    systemImage: "globe"
                 ) {
-                    Task {
-                        await vm.signInWithApple(idToken: "hhhh")
-                    }
+                    Task { await vm.signInWithGoogle() }
                 }
                 
                 SocialLoginButton(
                     title: "Continue with Google",
                     systemImage: "globe"
                 ) {
-                    Task {
-                        await vm.signInWithGoogle()
-                    }
+                    // integrate Google SDK
                 }
                 
                 SocialLoginButton(
                     title: "Continue with Facebook",
                     systemImage: "f.circle"
                 ) {
-                    Task {
-                        await vm.signInWithMeta(idToken: "hhhh")
-                    }
+                    // integrate Facebook SDK
                 }
             }
+            
+            // MARK: Sign Up
             
             HStack {
                 Text("Don’t have an account?")
                 
                 Button("Sign Up") {
-                    Task {
-                        await vm.signUp(email: email, password: password)
-                    }
+                    Task { await vm.signUp() }
                 }
                 .fontWeight(.semibold)
             }
             .font(.footnote)
+            
+            // MARK: Error
+            
+            if let error = vm.errorMessage {
+                Text(error)
+                    .foregroundColor(.red)
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
+            }
         }
         .padding(24)
     }

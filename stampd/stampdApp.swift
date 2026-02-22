@@ -11,20 +11,13 @@ import Supabase
 
 @main
 struct StampdApp: App {
-    let client = AuthManager.shared.client
     
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                if let user = client.auth.currentUser {
-                    HomeView()
-                } else {
-                    SignInView()
+            RootView()
+                .onOpenURL { url in
+                    GIDSignIn.sharedInstance.handle(url)
                 }
-            }
-            .onOpenURL { url in
-                GIDSignIn.sharedInstance.handle(url)
-            }
         }
     }
 }
