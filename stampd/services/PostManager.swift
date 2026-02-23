@@ -37,13 +37,10 @@ extension PostManager {
 // MARK: GET Best-Likes Posts
 extension PostManager {
     
-    func fetchMostLikedPosts(
-        limit: Int = 20
-    ) async throws -> [Post] {
+    func fetchMostLikedPosts(limit: Int = 20) async throws -> [Post] {
         
-        let response: [Post] = try await client.from(table).select()
-            .order("likes_count", ascending: false)
-            .limit(limit)
+        let response: [Post] = try await client
+            .rpc("get_feed_posts", params: ["limit_count": limit])
             .execute()
             .value
         
@@ -134,11 +131,23 @@ extension PostManager {
 // MARK: - INCREMENT LIKE
 extension PostManager {
     func incrementLikes(postId: UUID) async throws -> Int {
-        let response: [Int] = try await client
+        let newLikesCount: Int = try await client
             .rpc("increment_likes", params: ["post_id": postId])
             .execute()
             .value
+        
+        return newLikesCount
+    }
+}
 
-        return response.first ?? 0
+// MARK: - DECREMENT LIKE
+extension PostManager {
+    func decrementLikes(postId: UUID) async throws -> Int {
+        let newLikesCount: Int = try await client
+            .rpc("decrement_likes", params: ["post_id": postId])
+            .execute()
+            .value
+        
+        return newLikesCount
     }
 }

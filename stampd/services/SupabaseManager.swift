@@ -20,6 +20,15 @@ class SupabaseManager {
             fatalError("Missing Supabase configuration")
         }
         
+        // 🔥 Inject logging session
+        let configuration = URLSessionConfiguration.default
+        
+        #if DEBUG
+        configuration.protocolClasses = [LoggingURLProtocol.self]
+        #endif
+        
+        let session = URLSession(configuration: configuration)
+        
         client = SupabaseClient(
             supabaseURL: url,
             supabaseKey: key,
@@ -27,6 +36,8 @@ class SupabaseManager {
                 auth: .init(
                     autoRefreshToken: true,
                     emitLocalSessionAsInitialSession: true
+                ), global: .init(   
+                    session: session
                 )
             )
         )

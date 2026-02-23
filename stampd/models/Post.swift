@@ -15,9 +15,7 @@ struct Post: Identifiable, Codable, Equatable {
     let isVerified: Bool?
     let cityId: UUID
     let challengeId: Int64
-    
     var media: [MediaItem]
-    
     var user: HVUser?
     
     enum CodingKeys: String, CodingKey {
@@ -30,6 +28,7 @@ struct Post: Identifiable, Codable, Equatable {
         case cityId = "city_id"
         case media = "media_urls"
         case challengeId = "challenge_id"
+        case user = "user_data"
     }
     
     var isLiked: Bool = false

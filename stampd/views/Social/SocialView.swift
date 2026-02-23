@@ -13,55 +13,51 @@ struct SocialView: View {
     @StateObject private var vm = ViewModel()
     
     var body: some View {
-        ScrollView {
+        ZStack {
             switch vm.postsState {
             case .loading:
                 ProgressView()
             case .success(let posts):
-                LazyVStack(spacing: 0) {
-                    ForEach(posts) { post in
-                        postView(post)
-                            .containerRelativeFrame(.vertical)
-                            .id(post.id)
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(posts) { post in
+                            postView(post)
+                                .containerRelativeFrame(.vertical)
+                                .id(post.id)
+                        }
+                    }
+                    .scrollTargetLayout()
+                }
+                .scrollPosition(id: $vm.selectedPostId)
+                .scrollTargetBehavior(.paging)
+                .ignoresSafeArea()
+                .safeAreaInset(edge: .top) {
+                    Picker("", selection: $vm.selectedTab) {
+                        ForEach(Tab.allCases) { tab in
+                            Text(tab.rawValue).tag(tab)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .glassEffect(.regular.interactive())
+                    .frame(width: 200)
+                    .padding(8)
+                    .onChange(of: vm.selectedTab, perform: vm.switchTab)
+                }
+                .safeAreaInset(edge: .bottom) {
+                    if let currentPost = posts.first(where: { $0.id == vm.selectedPostId }), let user = currentPost.user {
+                        NavigationLink(destination: SocialProfileView(user: user)) {
+                            TravelExperienceView(user: user)
+                                .glassEffect(.regular.interactive())
+                                .padding(.horizontal)
+                                .padding(.bottom, 8)
+                        }
                     }
                 }
-                .scrollTargetLayout()
             case .failure(let error):
                 Text(error.localizedDescription)
                     .foregroundColor(.red)
                     .multilineTextAlignment(.center)
                     .padding()
-            }
-        }
-        .scrollPosition(id: $vm.selectedPostId)
-        .scrollTargetBehavior(.paging)
-        .ignoresSafeArea()
-        .safeAreaInset(edge: .top) {
-            Picker("", selection: $vm.selectedTab) {
-                ForEach(Tab.allCases) { tab in
-                    Text(tab.rawValue).tag(tab)
-                }
-            }
-            .pickerStyle(.segmented)
-            .glassEffect(.regular.interactive())
-            .frame(width: 200)
-            .padding(8)
-            .onChange(of: vm.selectedTab, perform: vm.switchTab)
-        }
-        .safeAreaInset(edge: .bottom) {
-            switch vm.postsState {
-            case .success(let posts):
-                if let currentPost = posts.first(where: { $0.id == vm.selectedPostId }), let user = currentPost.user {
-                    NavigationLink(destination: ProfileView(user: user)) {
-                        TravelExperienceView(user: user)
-                            .glassEffect(.regular.interactive())
-                            .padding(.horizontal)
-                            .padding(.bottom, 8)
-                    }
-                }
-                
-            default:
-                EmptyView()
             }
         }
     }
@@ -115,10 +111,10 @@ struct SocialView: View {
                     Spacer()
                     VStack(spacing: 24) {
                         Spacer()
-                        buttonBuilder(for: "heart.fill", action: { vm.likePost(post) })
-                        buttonBuilder(for: "ellipsis.message.fill", action: vm.openComments)
-                        buttonBuilder(for: "bookmark.fill", action: { vm.bookmarkPost(post) })
-                        buttonBuilder(for: "send", action: vm.sharePost)
+                        buttonBuilder(for: "heart.fill", actif: post.isLiked, action: { vm.toggleLike(for: post) })
+                        buttonBuilder(for: "ellipsis.message.fill", actif: false, action: vm.openComments)
+                        buttonBuilder(for: "bookmark.fill", actif: post.isBookmarked, action: { vm.bookmarkPost(post) })
+                        buttonBuilder(for: "paperplane.fill", actif: false, action: vm.sharePost)
                         Spacer()
                     }
                     .padding(.trailing, 24)
@@ -129,12 +125,12 @@ struct SocialView: View {
     }
     
     @ViewBuilder
-    func buttonBuilder(for icon: String, action: @escaping () -> Void) -> some View {
+    func buttonBuilder(for icon: String, actif: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Image(icon)
+            Image(systemName: icon)
                 .resizable()
                 .renderingMode(.template)
-                .foregroundStyle(.white)
+                .foregroundStyle(actif ? .red : .white)
                 .scaledToFit()
                 .frame(width: 36, height: 36)
         }

@@ -25,6 +25,7 @@ struct TravelExperienceView: View {
             
             Text("+\(user.points) pts")
                 .font(.system(.callout, design: .rounded))
+                .foregroundStyle(.white)
                 .fontWeight(.bold)
                 .padding(6)
                 .padding(.horizontal, 8)

@@ -6,9 +6,9 @@
 //
 import Foundation
 
-enum MediaType: Codable {
-    case image
-    case video
+enum MediaType: String, Codable {
+    case image = "image"
+    case video = "video"
 }
 
 struct MediaItem: Identifiable, Codable, Equatable {

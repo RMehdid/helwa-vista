@@ -31,23 +31,9 @@ extension SocialView {
         
         func fetchPosts() async {
             postsState = .loading
+            
             do {
-                let fetchedPosts = try await postManager.fetchMostLikedPosts(limit: 50)
-                print(fetchedPosts)
-                
-                // Fetch users in bulk
-                let userIds = fetchedPosts.compactMap { $0.userId }
-                let profiles = try await ProfileManager.shared.fetchProfiles(userIds: userIds)
-                let profilesDict = Dictionary(uniqueKeysWithValues: profiles.map { ($0.userId, $0) })
-                
-                // Merge users into HVPost
-                let posts = fetchedPosts.map { post -> Post in
-                    var post = post
-                    if let userId = post.userId {
-                        post.user = profilesDict[userId]
-                    }
-                    return post
-                }
+                let posts = try await postManager.fetchMostLikedPosts(limit: 50)
                 
                 postsState = .success(posts)
                 selectedPostId = posts.first?.id
@@ -64,19 +50,27 @@ extension SocialView {
         
         // MARK: - Actions
         
-        func likePost(_ post: Post) {
+        func toggleLike(for post: Post) {
             guard case .success(var posts) = postsState else { return }
-            
+
             Task {
                 do {
-                    let newLikesCount = try await postManager.incrementLikes(postId: post.id)
-                    if let index = posts.firstIndex(where: { $0.id == post.id }) {
-                        posts[index].isLiked.toggle()
-                        posts[index].likesCount = newLikesCount
+                    guard let index = posts.firstIndex(where: { $0.id == post.id }) else { return }
+
+                    let updatedCount: Int
+
+                    if posts[index].isLiked {
+                        updatedCount = try await postManager.decrementLikes(postId: post.id)
+                    } else {
+                        updatedCount = try await postManager.incrementLikes(postId: post.id)
                     }
+
+                    posts[index].isLiked.toggle()
+                    posts[index].likesCount = updatedCount
                     postsState = .success(posts)
+
                 } catch {
-                    postsState = .failure(.custom(message: "Failed to like post"))
+                    print("Toggle like failed:", error.localizedDescription)
                 }
             }
         }
