@@ -27,12 +27,6 @@ struct ProfileView: View {
                 Spacer()
             }
             
-            VStack {
-                TripRow(trip: HVTrip.sampleTrip)
-                    .frame(height: 120)
-                    .shadow(radius: 4, x: 2, y: 4)
-            }
-            
             VStack(alignment: .leading) {
                 Label("Contact the founder", systemImage: "message")
                     .labelStyle(AlignedLabelStyle())

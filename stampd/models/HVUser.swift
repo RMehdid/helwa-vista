@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct HVUser: Codable, Identifiable {
+struct HVUser: Codable, Identifiable, Equatable {
     
     let id: UUID
-    let user_id: UUID
+    let userId: UUID
     let firstname: String
     let lastname: String
     let pyro: String
@@ -18,14 +18,14 @@ struct HVUser: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case id
-        case user_id
+        case userId = "user_id"
         case firstname
         case lastname
         case pyro
         case points
     }
     
-    static let sampleUser = HVUser(id: UUID(), user_id: UUID(), firstname: "Samy", lastname: "Mehdid", pyro: pyros.randomElement()!, points: 1450)
+    static let sampleUser = HVUser(id: UUID(), userId: UUID(), firstname: "Samy", lastname: "Mehdid", pyro: pyros.randomElement()!, points: 1450)
     
     static let pyros = [
         "7309694",

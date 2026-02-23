@@ -9,6 +9,8 @@ import Supabase
 
 final class ProfileManager: SupabaseManager {
     
+    let table = "profiles"
+    
     static let shared = ProfileManager()
     
     private override init() {
@@ -19,7 +21,7 @@ final class ProfileManager: SupabaseManager {
     func createProfile(userId: UUID, firstname: String, lastname: String) async throws {
         
         let existing: [HVUser] = try await client
-            .from("profiles")
+            .from(table)
             .select()
             .eq("user_id", value: userId)
             .execute()
@@ -31,7 +33,7 @@ final class ProfileManager: SupabaseManager {
         
         let profile = HVUser(
             id: UUID(),
-            user_id: userId,
+            userId: userId,
             firstname: firstname,
             lastname: lastname,
             pyro: "Default",
@@ -39,7 +41,7 @@ final class ProfileManager: SupabaseManager {
         )
         
         try await client
-            .from("profiles")
+            .from(table)
             .insert(profile)
             .execute()
     }
@@ -48,7 +50,7 @@ final class ProfileManager: SupabaseManager {
     func fetchProfile(userId: UUID) async throws -> HVUser {
         
         let response: [HVUser] = try await client
-            .from("profiles")
+            .from(table)
             .select()
             .eq("user_id", value: userId)
             .execute()
@@ -65,9 +67,21 @@ final class ProfileManager: SupabaseManager {
     func updateProfile(_ profile: HVUser) async throws {
         
         try await client
-            .from("profiles")
+            .from(table)
             .update(profile)
-            .eq("user_id", value: profile.user_id)
+            .eq("user_id", value: profile.userId)
             .execute()
+    }
+    
+    // MARK: GET Profiles in Bulk
+    func fetchProfiles(userIds: [UUID]) async throws -> [HVUser] {
+        guard !userIds.isEmpty else { return [] }
+        let response: [HVUser] = try await client
+            .from(table)
+            .select()
+            .in("user_id", values: userIds)
+            .execute()
+            .value
+        return response
     }
 }
